@@ -16,7 +16,7 @@ Return a Stats object:
 
 ### GET `/pushers/`
 
-Get a list of pushers for the current IP address:
+Get a list of pushers for the current session:
 
  - `pushers`(`array[Pusher]`): A list of Pushers for the current IP address
 
