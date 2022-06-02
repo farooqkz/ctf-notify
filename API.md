@@ -13,8 +13,9 @@ Return a Stats object:
  - `mode`(`str`): One of `nade_fight`, `classic`, `classes`
  - `players`(`int`): Number of players
  - `map`(`str`): Current map name
+ - `map_technical`(`str`): Current map technical name
 
-### GET `/pushers/`
+### GET `/pushers`
 
 Get a list of pushers for the current session:
 
@@ -33,4 +34,4 @@ Deletes the pusher. Returns `true` if there was one and it was removed and `fals
 
 ### GET `/mapthumbnails/<map_name>`
 
-Return the URL for screenshot of the said map. 404 if no such map.
+Redirect to Github raw content map image.
