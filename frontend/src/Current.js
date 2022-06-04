@@ -25,11 +25,11 @@ function timeFormatted(t) {
     m -= 60;
   }
   s = s.toString();
-  s = s.length == 1 ? "0" + s : s;
+  s = s.length === 1 ? "0" + s : s;
   m = m.toString();
-  m = m.length == 1 ? "0" + m : m;
+  m = m.length === 1 ? "0" + m : m;
   h = h.toString();
-  h = h.length == 1 ? "0" + h : h;
+  h = h.length === 1 ? "0" + h : h;
   return `${h}:${m}:${s}`;
 }
 
