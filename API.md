@@ -14,6 +14,7 @@ Return a Stats object:
  - `players`(`int`): Number of players
  - `map`(`str`): Current map name
  - `map_technical`(`str`): Current map technical name
+ - `start_time`(`int`): Timestamp for when the current match has started
 
 ### GET `/pushers`
 
