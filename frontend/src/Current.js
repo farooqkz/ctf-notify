@@ -3,14 +3,8 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Divider from '@mui/material/Divider';
+import { modes } from "./utils";
 import "./Current.css";
-
-
-let friendlyName = {
-  nade_fight: "Nade fight",
-  classic: "Classic",
-  classes: "Classes",
-};
 
 
 function timeFormatted(t) {
@@ -89,10 +83,10 @@ export default class Current extends React.Component {
   }
   return (
     <Stack spacing={2} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-      <img alt={currentMapT} src={window.SERVER + "mapthumbnail/" + currentMapT} />
+      <img alt={currentMapT} src={window.SERVER + "mapthumbnails/" + currentMapT} />
       <Stack>
         <Typography>Current mode</Typography>
-        <Typography variant="h6">{friendlyName[currentMode]}</Typography>
+        <Typography variant="h6">{modes[currentMode]}</Typography>
         <Typography>Current map</Typography>
         <Typography variant="h6">{currentMap}</Typography>
         <Typography>Players online</Typography>
