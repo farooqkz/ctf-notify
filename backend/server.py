@@ -1,9 +1,11 @@
 from flask import Flask, redirect, request, abort, session
 from flask_restful import Api, Resource
+from flask_caching import Cache
 import requests
 import uuid
 import time
 import peewee as pw
+import os
 
 from models import Pusher
 from api import stats
@@ -17,13 +19,12 @@ CTF_MAP_REPO = "https://github.com/mt-ctf/maps/"
 _1D = 3600 * 24
 
 app = Flask(__name__)
+app.secret_key = os.urandom(12)
 api = Api(app)
-
 
 class Stat(Resource):
     def get(self):
-        s = stats()
-        if s is None:
+        if (s := stats()) is None:
             abort(502)
         else:
             return s
@@ -37,7 +38,7 @@ class MapThumbnail(Resource):
         )
 
 
-class Pusher(Resource):
+class PusherModify(Resource):
     def delete(self, id_):
         q = Pusher.delete().where(Pusher.id == id_)
         if q.execute() > 0:
@@ -45,15 +46,17 @@ class Pusher(Resource):
         else:
             abort(404)
 
-    def get(self, id_=...):
+
+class Pusher_(Resource):
+    def get(self):
         result = []
-        owner = session.get("uuid", "")
+        owner = session.get("owner", "")
         if owner:
             for pusher in Pusher.select().where(Pusher.owner == owner):
                 result.append(
                     {
                         "id": pusher.id,
-                        "players": pusher.player,
+                        "players": pusher.players,
                         "map": pusher.map_,
                         "mode": pusher.mode,
                     }
@@ -78,24 +81,24 @@ class Pusher(Resource):
             if locals()[j] is None:
                 missing.append(j)
         if len(missing) > 0:
-            abort({"missing": missing}, 400)
+            abort(400)
         owner = session.get("owner")
         if owner is None:
             session["owner"] = str(uuid.uuid4())
 
-        Pusher.create(
-            {
-                "pusher": pusher,
-                "players": players,
-                "map_": map_,
-                "mode": mode,
-                "expire": time.time() + _1D * 7,
-                "owner": str(session["owner"]),
-            }
+        p = Pusher(
+            pusher=pusher,
+            players=players,
+            map_=map_,
+            mode=mode,
+            expire=time.time() + _1D * 7,
+            owner=session["owner"]
         )
+        p.save()
         return {"result": "done"}
 
 
 api.add_resource(Stat, "/stats")
-api.add_resource(MapThumbnail, "/mapthumbnail/<string:map_name>")
-api.add_resource(Pusher, "/pusher/<string:id_>")
+api.add_resource(MapThumbnail, "/mapthumbnails/<string:map_name>")
+api.add_resource(PusherModify, "/pushers/<string:id_>")
+api.add_resource(Pusher_, "/pushers")
