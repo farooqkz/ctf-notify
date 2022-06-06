@@ -7,6 +7,11 @@ import { modes } from "./utils";
 import "./Current.css";
 
 
+function executeAndSetInterval(fn, i) {
+  fn();
+  setInterval(fn, i);
+}
+
 function timeFormatted(t) {
   let s = t, m = 0, h = 0;
   s = t;
@@ -43,7 +48,7 @@ export default class Current extends React.Component {
   }
   
   componentDidMount() {
-    setInterval(() =>
+    executeAndSetInterval(() =>
       fetch(window.SERVER + "stats").then((r) => {
         if (r.ok) {
           r.json().then((j) => {
