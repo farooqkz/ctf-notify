@@ -23,8 +23,9 @@ import { modes, maps } from "./utils";
 
 export default class Notif extends React.Component {
   fetchPushers = () => {
-    fetch(window.SERVER + "pushers/lol").then(r => r.json()).then((j) => {
+    fetch(window.SERVER + "pushers").then(r => r.json()).then((j) => {
       this.pushers = j.pushers;
+      this.setState({ pushersCount: j.pushers.length });
     });
   };
   
@@ -33,13 +34,29 @@ export default class Notif extends React.Component {
       fetch(window.SERVER + "pushers",
         {
           method: "POST",
-          body: JSON.stringify({ players: this.players, mode: this.mode, map: map }),
+          body: JSON.stringify({
+            players: this.players,
+            mode: this.mode,
+            map: map,
+            pusher: "MEow",
+          }),
+          headers: { "content-type": "application/json" },
         })
     });
     // TODO: fetchPushers should happen after all are submitted not here
     this.fetchPushers();
+    this.setState({ addNotif: false });
   };
-
+  
+  deletePusher = (id) => {
+    fetch(window.SERVER + `pushers/${id}`, { method: "DELETE" }).then((r) => {
+      if (r.ok) {
+        this.fetchPushers();
+      } else {
+        alert("An error occured while deleting");
+      }
+    });
+  };
   constructor(props) {
     super(props);
     this.pushers = [];
@@ -48,6 +65,7 @@ export default class Notif extends React.Component {
     this.players = 10;
     this.state = {
       addNotif: false,
+      pushersCount: 0,
     }
   }
 
@@ -56,15 +74,15 @@ export default class Notif extends React.Component {
   }
 
   render() {
-    const { addNotif } = this.state;
+    const { addNotif, pushersCount } = this.state;
     return (
       <>
       <Dialog open={addNotif} onClose={() => this.setState({ addNotif: false })}>
         <DialogTitle>
-          Notifying you when certain map(s) with enough players is being player
+          Notifying you when certain map(s) with enough players is being played
         </DialogTitle>
         <DialogContent>
-          <Select value={this.mode} label="Game mode" onChange={(evt) => { this.mode = evt.target.value }}>
+          <Select defaultValue={this.mode} label="Game mode" onChange={(evt) => { this.mode = evt.target.value }}>
             {Object.entries(modes).map((m) => <MenuItem key={m[0]} value={m[0]}>{m[1]}</MenuItem>)}
           </Select>
           <TextField
@@ -105,7 +123,7 @@ export default class Notif extends React.Component {
         <Fab size="medium" onClick={() => this.setState({ addNotif: true })}>
           <AddIcon />
         </Fab>
-        { this.pushers.length === 0 ?
+        { pushersCount === 0 ?
             <Typography align="center">No notification</Typography>
             :
             (
@@ -113,14 +131,18 @@ export default class Notif extends React.Component {
                 {this.pushers.map((pusher) => {
                   return (
                   <ListItem secondaryAction={
-                    <IconButton>
+                    <IconButton onClick={() => this.deletePusher(pusher.id)}>
                       <DeleteIcon />
                     </IconButton>
                   }>
                     <ListItemIcon>
-                      <img src={window.SERVER + "mapthumbnail/" + pusher.map} alt={pusher.map} />
+                      <img
+                        style={{ height: "85px", width: "128px", margin: "1vw" }}
+                        src={window.SERVER + "mapthumbnails/" + pusher.map}
+                        alt={pusher.map}
+                      />
                     </ListItemIcon>
-                    <ListItemText primary={`When ${pusher.players} online`} secondary={pusher.map} />
+                    <ListItemText primary={`When ${pusher.players} online with ${pusher.mode}`} secondary={maps[pusher.map]} />
                   </ListItem>
                   );
                 })}

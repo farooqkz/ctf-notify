@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 
-window.SERVER = "http://localhost:5050/";
+window.SERVER = "/";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
