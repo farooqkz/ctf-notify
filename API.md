@@ -22,6 +22,11 @@ Get a list of pushers for the current session:
 
  - `pushers`(`array[Pusher]`): A list of Pushers for the current IP address
 
+
+### POST `/pushers`
+
+Create a pusher for the current session. Requires a `Pusher` object exluding `id`
+
 #### Pusher
 
  - `id`(`int`): A 32 bit unique random Id for the Pusher
