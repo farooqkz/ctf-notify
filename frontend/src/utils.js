@@ -1,4 +1,3 @@
-
 let modes = {
   nade_fight: "Nade fight",
   classic: "Classic",

@@ -2,10 +2,9 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 import { modes } from "./utils";
 import "./Current.css";
-
 
 function executeAndSetInterval(fn, i) {
   fn();
@@ -13,7 +12,9 @@ function executeAndSetInterval(fn, i) {
 }
 
 function timeFormatted(t) {
-  let s = t, m = 0, h = 0;
+  let s = t,
+    m = 0,
+    h = 0;
   s = t;
   while (s >= 60) {
     m++;
@@ -46,61 +47,84 @@ export default class Current extends React.Component {
       timeElasped: 0,
     };
   }
-  
+
   componentDidMount() {
-    executeAndSetInterval(() =>
-      fetch(window.SERVER + "stats").then((r) => {
-        if (r.ok) {
-          r.json().then((j) => {
-            this.setState({
-              currentMap: j.map,
-              currentMapT: j.map_technical,
-              wait: false,
-              players: j.players,
-              currentMode: j.mode,
-              timeStarted: j.start_time,
+    executeAndSetInterval(
+      () =>
+        fetch(window.SERVER + "stats").then((r) => {
+          if (r.ok) {
+            r.json().then((j) => {
+              this.setState({
+                currentMap: j.map,
+                currentMapT: j.map_technical,
+                wait: false,
+                players: j.players,
+                currentMode: j.mode,
+                timeStarted: j.start_time,
+              });
             });
-          });
-        } else {
-          this.setState({ error: true });
-        }
-    }), 10000);
-    
-    setInterval(() => this.setState((state) => {
-      state.timeElasped = Math.round(Date.now() / 1000 - state.timeStarted);
-      return state;
-    }), 900);
+          } else {
+            this.setState({ error: true });
+          }
+        }),
+      10000
+    );
+
+    setInterval(
+      () =>
+        this.setState((state) => {
+          state.timeElasped = Math.round(Date.now() / 1000 - state.timeStarted);
+          return state;
+        }),
+      900
+    );
   }
 
   render() {
-    const { timeElasped, players, wait, error, currentMap, currentMode, currentMapT } = this.state;
+    const {
+      timeElasped,
+      players,
+      wait,
+      error,
+      currentMap,
+      currentMode,
+      currentMapT,
+    } = this.state;
     if (error) {
       return (
-        <Typography align="center" variant="h4">Something went wrong. Maybe reload the page?</Typography>
+        <Typography align="center" variant="h4">
+          Something went wrong. Maybe reload the page?
+        </Typography>
       );
     }
     if (wait) {
+      return (
+        <div className="wait">
+          <CircularProgress />
+        </div>
+      );
+    }
     return (
-      <div className="wait">
-        <CircularProgress />
-      </div>
+      <Stack
+        spacing={2}
+        direction="row"
+        divider={<Divider orientation="vertical" flexItem />}
+      >
+        <img
+          alt={currentMapT}
+          src={window.SERVER + "mapthumbnails/" + currentMapT}
+        />
+        <Stack>
+          <Typography>Current mode</Typography>
+          <Typography variant="h6">{modes[currentMode]}</Typography>
+          <Typography>Current map</Typography>
+          <Typography variant="h6">{currentMap}</Typography>
+          <Typography>Players online</Typography>
+          <Typography variant="h6">{players}</Typography>
+          <Typography>Time elasped</Typography>
+          <Typography variant="h6">{timeFormatted(timeElasped)}</Typography>
+        </Stack>
+      </Stack>
     );
   }
-  return (
-    <Stack spacing={2} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-      <img alt={currentMapT} src={window.SERVER + "mapthumbnails/" + currentMapT} />
-      <Stack>
-        <Typography>Current mode</Typography>
-        <Typography variant="h6">{modes[currentMode]}</Typography>
-        <Typography>Current map</Typography>
-        <Typography variant="h6">{currentMap}</Typography>
-        <Typography>Players online</Typography>
-        <Typography variant="h6">{players}</Typography>
-        <Typography>Time elasped</Typography>
-        <Typography variant="h6">{timeFormatted(timeElasped)}</Typography>
-      </Stack>
-    </Stack>
-  );
-
-  }
-};
+}
