@@ -5,3 +5,5 @@ This web app shows the current number of players, mode and map in the Minetest C
 See API.md for the RESTful API.
 
 The code is under GNU Affero General Public License. See AGPL-3 for licensing information.
+
+Donations are very welcome. Also I accept offers.
