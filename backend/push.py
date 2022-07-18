@@ -12,6 +12,6 @@ if __name__ == "__main__":
         == s["mode"] & Pusher.players
         <= s["players"]
     ):
-        requests.get(p.pusher)
+        requests.get(p.pusher, headers={"TTL": str(60 * 10)})
         i += 1
     print(i)
