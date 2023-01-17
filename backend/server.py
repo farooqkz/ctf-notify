@@ -16,7 +16,7 @@ SERVER_LIST_API = "https://servers.minetest.net/list"
 
 CTF_MAP_REPO = "https://github.com/mt-ctf/maps/"
 
-_1D = 3600 * 24
+_1Day = 3600 * 24
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)
@@ -61,7 +61,7 @@ class Pusher_(Resource):
                         "mode": pusher.mode,
                     }
                 )
-            Pusher.update({"expire": time.time() + _1D * 3}).where(
+            Pusher.update({"expire": time.time() + _1Day * 3}).where(
                 Pusher.owner == owner
             ).execute()
             return {"pushers": result}
@@ -91,14 +91,24 @@ class Pusher_(Resource):
             players=players,
             map_=map_,
             mode=mode,
-            expire=time.time() + _1D * 7,
+            expire=time.time() + _1Day * 7,
             owner=session["owner"]
         )
         p.save()
         return {"result": "done"}
 
 
-api.add_resource(Stat, "/stats")
-api.add_resource(MapThumbnail, "/mapthumbnails/<string:map_name>")
-api.add_resource(PusherModify, "/pushers/<string:id_>")
-api.add_resource(Pusher_, "/pushers")
+def build_app() -> Flask:
+    app = Flask(__name__)
+    app.secret_key = os.urandom(12)
+    api = Api(app)
+
+    api.add_resource(Stat, "/stats")
+    api.add_resource(MapThumbnail, "/mapthumbnails/<string:map_name>")
+    api.add_resource(PusherModify, "/pushers/<string:id_>")
+    api.add_resource(Pusher_, "/pushers")
+
+    return app
+
+if __name__ == "__main__":
+    app = build_app()
