@@ -1,6 +1,6 @@
 # CTF-Notify
 
-![Screenshot of CTF notify](/screenshot.png)
+![A screenshot of CTF notify](/screenshot.png)
 
 [Live instance](https://shangul.de1.hashbang.sh)
 
@@ -10,4 +10,4 @@ See API.md for the RESTful API.
 
 The code is under GNU Affero General Public License. See AGPL-3 for licensing information.
 
-Donations are very welcome. Also I accept offers.
+Donations are very welcome. Also I accept job offers.
