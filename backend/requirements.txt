@@ -1,4 +1,0 @@
-peewee
-Flask
-flask_restful
-requests
