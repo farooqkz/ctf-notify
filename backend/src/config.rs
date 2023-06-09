@@ -9,4 +9,5 @@ pub struct AppConfig {
     pub log_level: Option<String>, // WARN | INFO | ERROR | DEBUG
     pub cache_timeout: Option<usize>, // in seconds
     pub ctf_server_addr: String,
+    pub db: Option<String>,
 }
