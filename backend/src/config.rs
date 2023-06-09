@@ -8,4 +8,5 @@ pub struct AppConfig {
     pub minetest_server_list_api: Option<String>,
     pub log_level: Option<String>, // WARN | INFO | ERROR | DEBUG
     pub cache_timeout: Option<usize>, // in seconds
+    pub ctf_server_addr: String,
 }
