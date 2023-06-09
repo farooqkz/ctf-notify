@@ -180,6 +180,7 @@ dependencies = [
  "axum-sessions",
  "log",
  "reqwest",
+ "serde",
  "serde_json",
  "tokio",
  "toml",
