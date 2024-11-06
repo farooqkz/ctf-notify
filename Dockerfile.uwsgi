@@ -1,0 +1,8 @@
+FROM alpine:3.20
+RUN apk add uwsgi-python3 uwsgi py3-peewee py3-requests py3-flask py3-flask-restful python3 py3-flask-caching
+COPY ./backend /var/backend
+RUN mkdir -p /opt/api
+WORKDIR /var/backend
+
+CMD uwsgi --plugin /usr/lib/uwsgi/python --http-socket /opt/api/api.sock -p 2 -w server:app
+

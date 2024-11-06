@@ -1,0 +1,14 @@
+FROM node:18 AS builder
+
+COPY ./frontend /opt/
+WORKDIR /opt/
+RUN yarn && yarn build
+
+
+
+FROM nginx:latest AS final
+
+COPY nginx.conf /etc/
+COPY --from=builder /opt/build /var/www/
+
+CMD ["nginx", "-g", "daemon off;"]

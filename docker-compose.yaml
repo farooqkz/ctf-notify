@@ -1,0 +1,20 @@
+services:
+  uwsgi:
+    build: 
+      context: .
+      dockerfile: Dockerfile.uwsgi
+    volumes:
+      - api:/opt/api
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    volumes:
+      - /run/ctfn:/run/
+      - api:/run/
+    depends_on:
+      - uwsgi
+
+volumes:
+  api:
