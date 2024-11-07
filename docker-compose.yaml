@@ -3,6 +3,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.uwsgi
+    container_name: ctfn_uwsgi
+    restart: always
     volumes:
       - api:/opt/api
 
@@ -10,8 +12,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
+    container_name: ctfn_nginx
+    restart: always
     volumes:
-      - /run/ctfn:/run/
+      - /run/ctfn:/var/opt
       - api:/run/
     depends_on:
       - uwsgi
